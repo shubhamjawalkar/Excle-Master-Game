@@ -1,0 +1,156 @@
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: white;
+}
+
+.container {
+    max-width: 900px;
+    margin: auto;
+    padding: 40px 20px;
+}
+
+h1 {
+    text-align: center;
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #94a3b8;
+    margin-bottom: 40px;
+}
+
+.card {
+    background: #1e293b;
+    padding: 25px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.3);
+}
+
+.question {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+    margin-top: 8px;
+}
+
+button {
+    margin-top: 20px;
+    padding: 12px 20px;
+    background: #3b82f6;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+}
+
+button:hover {
+    background: #2563eb;
+}
+
+.result {
+    margin-top: 20px;
+    font-size: 22px;
+    text-align: center;
+}
+
+.leaderboard {
+    margin-top: 40px;
+}
+
+.leaderboard h2 {
+    text-align: center;
+}
+
+.leaderboard ul {
+    list-style: none;
+    padding: 0;
+}
+
+.leaderboard li {
+    background: #334155;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 6px;
+}
+</style>
+
+<div class="container">
+
+<h1>🏆 Excel Master Challenge</h1>
+<p class="subtitle">Test your Excel & Analytical Skills</p>
+
+<div class="card">
+    <div class="question">1️⃣ Which formula removes extra spaces?</div>
+    <input type="text" id="q1" placeholder="Enter your answer">
+
+    <div class="question">2️⃣ Which function counts with multiple criteria?</div>
+    <input type="text" id="q2" placeholder="Enter your answer">
+
+    <div class="question">3️⃣ Which tool summarizes large datasets quickly?</div>
+    <input type="text" id="q3" placeholder="Enter your answer">
+
+    <button onclick="calculateScore()">Submit Answers</button>
+    <div class="result" id="result"></div>
+</div>
+
+<div class="leaderboard">
+    <h2>🏅 Leaderboard</h2>
+    <ul id="leaderboardList"></ul>
+</div>
+
+</div>
+
+<script>
+function calculateScore() {
+    let score = 0;
+
+    if(document.getElementById("q1").value.toUpperCase() === "TRIM") score += 10;
+    if(document.getElementById("q2").value.toUpperCase() === "COUNTIFS") score += 10;
+    if(document.getElementById("q3").value.toUpperCase() === "PIVOT TABLE") score += 10;
+
+    document.getElementById("result").innerText = "Your Score: " + score + " / 30";
+
+    saveScore(score);
+}
+
+function saveScore(score) {
+    let name = prompt("Enter your name for leaderboard:");
+
+    if(!name) return;
+
+    let leaderboard = JSON.parse(localStorage.getItem("excelLeaderboard")) || [];
+    leaderboard.push({name: name, score: score});
+    leaderboard.sort((a,b) => b.score - a.score);
+
+    localStorage.setItem("excelLeaderboard", JSON.stringify(leaderboard));
+    displayLeaderboard();
+}
+
+function displayLeaderboard() {
+    let leaderboard = JSON.parse(localStorage.getItem("excelLeaderboard")) || [];
+    let list = document.getElementById("leaderboardList");
+    list.innerHTML = "";
+
+    leaderboard.forEach(player => {
+        let li = document.createElement("li");
+        li.innerText = player.name + " - " + player.score;
+        list.appendChild(li);
+    });
+}
+
+displayLeaderboard();
+</script>
